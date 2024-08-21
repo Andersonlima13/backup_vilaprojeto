@@ -1,0 +1,139 @@
+
+ <!--- Pagina inicial , busca de alunos -->
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Plataformas Vila</title>
+     <link rel="icon" href="/img/vila_favicon.png" type="image/x-icon">
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet"/>
+     <link rel="stylesheet" href="/css/index.css">
+     
+     
+ </head>
+ <body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js" integrity="sha512-6HmJ9Y5PZWQVCd4KUwIaSgtDskfsykB+Fvm8Nq98GVCMHstaVoX9jqDdwSyGCbmJy5eLs/DXgDE3SXRS+2B2yA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ <section class="h-100 gradient-form" style="background: linear-gradient(90deg, rgba(30,57,95,1) 1%, rgba(50,239,203,1) 100%);
+ ">
+   <div class="container py-5 h-100" >
+     <div class="row d-flex justify-content-center align-items-center h-100">
+       <div class="col-xl-10">
+         <div class="card rounded-3 text-black bg-black border" >
+           <div class="row g-0">
+             <div class="col-lg-6 rounded-5" id="input-container">
+               <div class="card-body p-md-5 mx-md-4">
+ 
+                 <div class="">
+                   <h4 class="mt-1 mb-5 pb-1 fw-bold">Buscar acesso de aluno</h4>
+                 </div>
+ 
+                 <form action="/aluno" method="GET">
+                 
+ 
+                   <div data-mdb-input-init class="form-outline mb-4 border-2">              
+                    <select class="border-2 border-primary rounded-1 fw-bold" name="searchType" required style="width: 90px; height: 32px;">
+                      <option value="matricula">Matrícula</option>
+                      <option value="nome">Nome</option>
+                      <input class="rounded-1 border-2 border-primary fw-bold" type="text" name="param" id="param" placeholder="Buscar ..." oninput="buscarSugestoes()" required>
+                    </select>
+                    
+                   </div>
+                  
+                   
+ 
+                   <div class="text-center pt-1 mb-5 pb-1">
+                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg" type="submit" id="buscar-aluno" style="width: 80%; height: 40px;">Buscar</button>
+                   </div>
+                   <!-- <div class="text-center pt-1 mb-5 pb-1">
+                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-danger btn-block fa-lg" type="button" onclick="gerarpdf()"> botao</button>
+                  
+
+                 
+
+
+
+
+                  </div>
+                  --->
+ 
+    
+ 
+                 </form>
+
+                
+
+
+
+ 
+               </div>
+             </div>
+             <div class="col-lg-6 d-flex align-items-center rounded-5" id="logo-container">
+               <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                <img src="/img/logo_vila.png"
+                style="width: 320px;" alt="logo">
+                <P class="pt-4">Ferramenta para consulta de logins de nossas plataformas digitais.<br> <b> Equipe de 
+                  TI & TE Colegio vila.
+                </P>
+               </div>
+               
+               
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </section>
+     
+ 
+ 
+ 
+ 
+     <script>
+
+ 
+       document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('buscar-aluno').addEventListener('click', function() {
+            const matricula = document.getElementById('matricula').value;
+
+            if (!matricula.trim()) {
+                window.alert("Insira um número de matrícula ou nome");
+                return; 
+            }
+            
+            window.location.href = `/aluno/${matricula}`;
+        });
+
+        function downloadPdf(matricula) {
+            window.location.href = '/aluno/' + matricula + '/pdf';
+        }
+    });
+
+
+
+    
+        
+
+    
+/*
+      function gerarpdf(){
+        var doc = new jsPDF()
+        doc.fromHTML(`<h1> HTML DE TESTE </h1>`)
+        doc.save(`pdf`)
+
+      }
+
+  */
+
+         
+     </script>
+ 
+ 
+ </body>
+ </html>
+ 
+ 
+ 
+ 
+

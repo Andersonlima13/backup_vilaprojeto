@@ -1,0 +1,11 @@
+login bd pc home
+
+
+
+const pool = new Pool({
+    user: 'postgres',
+    host: 'localhost',
+    database: 'PLATAFORMAS_ALUNOS',
+    password: '12345',
+    port:5432,
+})

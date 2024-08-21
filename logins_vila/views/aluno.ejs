@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card De Acessos</title>
+    <link rel="icon" href="/img/student_favicon.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="/css/teste.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+</head>
+<body>
+  
+  <! -- Funções de restrição ( não aparecer plataformas para turmas que nao tem acesso as mesmas)
+    devem ser remodeladas para uma função por segmento , ao inves de plataformas, aproveitando 
+    especie de polimorfismo >
+
+  <% 
+  // Função para verificar se as serie do aluno possui acesso ao evo , se não , o login não é renderizado 
+  function sem_evolucional(numeros) {
+    return numeros.some(numero => aluno.serie.startsWith(numero));
+  }
+
+  // numero ( serie ) que se aplica a condição 
+  const serie_fund = ["6", "7", "8"];
+%>
+
+
+<% 
+  // Função para verificar se as serie do aluno possui acesso ao richmond , se não , o login não é renderizado 
+  function sem_richmond(numeros) {
+    return numeros.some(numero => aluno.serie.startsWith(numero));
+  }
+
+  // numero ( serie ) que se aplica a condição 
+  const serie_medio_richmond = ["1", "2", "3"];
+%>
+
+<% 
+  // Função para verificar se as serie do aluno possui acesso ao arvore , se não , o login não é renderizado 
+  function sem_arvore(numeros) {
+    return numeros.some(numero => aluno.serie.startsWith(numero));
+  }
+%>
+
+
+
+
+
+ 
+
+
+
+
+    <section id="content" style="background: linear-gradient(90deg, rgba(30,57,95,1) 1%, rgba(50,239,203,1) 100%);
+    ">>
+        <div class="container py-5">
+          <div class="row">
+            <div class="col">
+              <nav aria-label="breadcrumb" class="bg-body-tertiary rounded-3 p-3 mb-4">
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item"><a href="/Teste">Pagina</a></li>
+                  <li class="breadcrumb-item"><a href="#">User</a></li>
+                  <li class="breadcrumb-item  active" aria-current="page">Suporte</li>
+                  <a href="https://view.genially.com/646bfc40038e850019bf4b48" target="_blank"> <img src="/img/suporte.jpg" alt="suporte" width="25" height="25s"> </a>
+                </ol>
+              </nav>
+            </div>
+          </div>
+      
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="card mb-4">
+                <div class="card-body text-center">
+                  <img src="/img/aluno.jpg" alt="avatar"
+                    class="rounded-circle img-fluid" style="width: 150px;">
+                  <h5 class="my-3"><%= aluno.nome %></h5>
+                  <p class="text-muted mb-1"><%= aluno.serie %></p>
+                  <p class="text-muted mb-4"><%= aluno.unidade %></p>
+                  <div class="d-flex justify-content-center mb-2">
+                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary"> <a href="/Teste" style="color:azure">Voltar</a> </button>
+                    <button id="downloadButton" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1">IMPRIMIR CARD</button>
+                  </div> 
+                </div>
+              </div>
+              <div class="card mb-4 mb-lg-0">
+              </div>
+
+              
+            </div>
+
+          
+
+
+            <div class="col-lg-8">
+              
+              <div class="card mb-4">
+                
+                <div class="card-body">
+                  
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Login App Vila</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.matricula %>
+                       
+                      </p>        
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Senha App Vila</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.senha_app %></p>        
+                    </div>
+                  </div>
+                  
+                  <hr>
+
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Email Institucional</p>
+                    </div>
+                    <div class="col-sm-9"> 
+                      <p class="text-muted mb-0"><%= aluno.email %></p>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Senha</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">mudar@1234</p>
+                    </div>
+                  </div>
+
+
+
+                  <hr>
+
+
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Login SFB</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.sfb %></p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Senha SFB</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.senha_app %></p>
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <% if (!sem_richmond(serie_medio_richmond)) { %>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Login Richmond</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.richmond %></p>
+                      
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Senha Richmond</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.senha_r %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <% } %>
+
+
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Chave Arvore de Livros</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.arvore_senha %></p>
+                       
+                    </div>
+                  </div>
+                  <hr>
+
+
+                  <% if (!sem_evolucional(serie_fund)) { %>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Login Evolucional</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.evolucional %></p>
+                    </div>
+                  </div>
+                  
+
+                  
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Senha Evolucional</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.senha_evo %></p>
+                    </div>
+                  </div>
+                  
+
+                  <hr>
+                  <% } %>
+
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Email Medalhei</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= aluno.medalhei %></p>
+                    </div>
+                  </div>
+
+
+            
+                  
+
+
+
+
+                </div>
+              </div>              
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <script>
+
+        document.getElementById("downloadButton").addEventListener("click", function() {
+          const content = document.getElementById("content");
+          const matricula = '<%= aluno.matricula %>'; // guardar a matricula do aluno proveniente do banco de dados
+          const filename = '' + matricula + '.pdf'; // Define o nome do arquivo PDF
+
+  // Converte o conteúdo em pdf , sendo o conteudo todo o html da section
+  html2pdf().from(content).set({ filename: filename }).save();
+});
+
+
+
+
+
+/*
+
+function gerarpdf(){
+        var doc = new jsPDF()
+        doc.fromHTML(`<h1> HTML DE TESTE </h1>`)
+        doc.save(`pdf`)
+
+      }
+
+*/
+    
+
+  
+/*
+
+ IDEIA DE DOWNLOAD DE TODOS OS ALUNOS ( A DESENVOLVER)
+  
+    document.getElementById("downloadButton").addEventListener("click", function() {
+  fetch('/alunos')
+    .then(response => response.json())
+    .then(alunos => {
+      alunos.forEach(aluno => {
+        const html = `
+          <html>
+            <head>
+              <title>Informações do Aluno</title>
+            </head>
+            <body>
+              <h1>${aluno.nome}</h1>
+              <p>Matrícula: ${aluno.matricula}</p>
+              
+            </body>
+          </html>
+        `;
+        html2pdf().from(html).save(`${aluno.matricula}.pdf`);
+      });
+    })
+    .catch(error => {
+      console.error('Erro ao obter os dados dos alunos:', error);
+      alert('Erro ao obter os dados dos alunos.');
+    });
+});
+
+*/
+
+
+        </script>
+    
+</body>
+</html>
+

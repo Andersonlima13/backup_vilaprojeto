@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(90deg, rgb(5, 21, 43) 1%, rgb(28, 165, 140) 100%);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Faz com que a página ocupe toda a altura da tela */
+}
+
+.container {
+    color: #ffff;
+    max-width: 800px;
+    background-color: #1E395F;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.icon-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.icon {
+    text-align: center;
+    width: 100px;
+    margin: 20px;
+    transition: transform 0.3s ease, background-color 0.3s ease; /* Adiciona uma transição suave para o efeito de hover */
+}
+
+.icon:hover {
+    transform: scale(1.1); /* Aumenta o tamanho do ícone ao passar o mouse */
+    background-color: rgba(255, 255, 255, 0.1); /* Adiciona uma cor de fundo ao passar o mouse */
+    border-radius: 8px;
+}
+
+.icon img {
+    width: 100px; /* ajuste o tamanho conforme necessário */
+    height: 100px; /* ajuste o tamanho conforme necessário */
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.icon p {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-top: 10px; /* Espaço entre o ícone e o texto */
+    white-space: normal;
+}
