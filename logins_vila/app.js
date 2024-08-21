@@ -61,22 +61,23 @@ app.listen(process.env.APP_PORT, () => {
   console.log("Servidor iniciado com sucesso!");
 });
 
-app.get("/teste", async (req, res) => {
-  res.render('teste');
-});
+
+
+// ROTAS 
 
 app.get("/", async (req, res) => {
   res.render('Home');
 });
 
-app.get("/Home", async (req, res) => {
-  res.render('index', { alunos: [] });
+
+app.get("/login", async (req, res) => {
+  res.render('login');
 });
+
 
 app.get("/dashboards", async (req, res) => {
   res.render('dashboards');
 });
-
 
 
 app.get("/resultados", async (req, res) => {
@@ -84,11 +85,15 @@ app.get("/resultados", async (req, res) => {
 });
 
 
-
 // ROTA DE UPLOAD (TESTE )
 
 app.get('/upload', (req, res) => {
   res.render('upload');
+});
+
+
+app.get('/usuarios', (req, res) => {
+  res.render('usuarios');
 });
 
 
@@ -289,4 +294,26 @@ app.post('/upload', upload.single('file'), async (req, res) => {
       fs.unlinkSync(req.file.path);
     }
   }
+});
+
+
+
+
+
+
+// Rota de criação de usuarios
+
+app.post("/register", async (req,res) =>{
+  const newUser =  await new User({
+    email: req.body.email,
+    password: CryptoJs.AES.encrypt(req.body.password, process.env.PASS_SEC).toString(),
+});
+
+try{
+const savedUser = await newUser.save();
+res.status(201).json(savedUser);
+}
+catch  (err) {
+res.status(500).json(err);    
+}                                                                                                                                         
 });
