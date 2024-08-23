@@ -33,3 +33,15 @@
     background-color: #1E395F;
 }
 
+
+
+/*  MODAL , TELA DE UPLOAD */
+
+
+
+#myModal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.5); /* Fundo escurecido */
+}

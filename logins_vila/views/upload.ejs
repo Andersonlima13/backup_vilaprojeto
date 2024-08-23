@@ -55,26 +55,110 @@
                             <div class="row g-0">
                                 <div class="col-lg-6 rounded-5" id="input-container">
                                     <div class="card-body p-md-5 mx-md-4">
-                           
-                                      <!-- IMPORTACAO DE PLANILHAS-->
+                                        <h1>Importar Planilha de Alunos</h1>
+                                        <form action="/upload" method="POST" enctype="multipart/form-data">
+                                            <label for="file">Escolha a planilha:</label>
+                                            <input class="" type="file" id="file" name="file" accept=".xlsx, .xls" required>
+                                            <br>
+                                            <button id="modal" class="bg-primary rounded-1 border-0" type="button" data-toggle="modal" data-target="#myModal">Importar</button>
+                                        </form>
 
-                                      <h1>Importar Planilha de Alunos</h1>
-                                      <form action="/upload" method="POST" enctype="multipart/form-data">
-                                        <label for="file">Escolha a planilha:</label>
-                                        <input type="file" id="file" name="file" accept=".xlsx, .xls" required>
-                                        <br>
-                                        <button type="submit">Importar</button>
-                                      </form>
-                                      
+                                        <!-- Modal -->
+                                        <div id="myModal" class="modal custom-modal">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Modelo De Planilha</h5>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-dark table-bordered mb-0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th scope="col">NOME</th>
+                                                                        <th scope="col">SERIE</th>
+                                                                        <th scope="col">UNIDADE</th>
+                                                                        <th scope="col">EMAIL</th>
+                                                                        <th scope="col">SENHA_EMAIL</th>
+                                                                        <th scope="col">MATRICULA</th>
+                                                                        <th scope="col">SENHA_APP</th>
+                                                                        <th scope="col">SENHA_SFB</th>
+                                                                        <th scope="col">RICHMOND</th>
+                                                                        <th scope="col">SENHA_R</th>
+                                                                        <th scope="col">ARVORE_SENHA</th>
+                                                                        <th scope="col">EVOLUCIONAL</th>
+                                                                        <th scope="col">SENHA_EVO</th>
+                                                                        <th scope="col">MEDALHEI</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th scope="row">Alice Silva</th>
+                                                                        <td>9º Ano B</td>
+                                                                        <td>VILA SUL</td>
+                                                                        <td>alice.silva@example.com</td>
+                                                                        <td>senha1234</td>
+                                                                        <td>0001</td>
+                                                                        <td>170910</td>
+                                                                        <td>sfbSenha2@</td>
+                                                                        <td>rsbr.alicesilva.exemplo</td>
+                                                                        <td>senhaRichmond</td>
+                                                                        <td>DNV5237</td>
+                                                                        <td>evolucionalPass</td>
+                                                                        <td>senhaEvo#1</td>
+                                                                        <td>alice.silva@example.com</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">Carlos Pereira</th>
+                                                                        <td>8º Ano C</td>
+                                                                        <td>VILA TAMBAU</td>
+                                                                        <td>carlos.pereira@example.com</td>
+                                                                        <td>car123456</td>
+                                                                        <td>0003</td>
+                                                                        <td>111111</td>
+                                                                        <td>sfbSenhaCarlos@</td>
+                                                                        <td>rsbr.carlospereira.exemplo</td>
+                                                                        <td>senhaRichmondCarlos</td>
+                                                                        <td>DNV5239</td>
+                                                                        <td>evolucionalPass3</td>
+                                                                        <td>senhaEvo#3</td>
+                                                                        <td>carlos.pereira@example.com</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">Diana Oliveira</th>
+                                                                        <td>1º Ano D</td>
+                                                                        <td>VILA BESSA</td>
+                                                                        <td>diana.oliveira@example.com</td>
+                                                                        <td>dianaSenha!2024</td>
+                                                                        <td>0004</td>
+                                                                        <td>121212</td>
+                                                                        <td>sfbSenhaDiana@</td>
+                                                                        <td>rsbr.dianaoliveira.exemplo</td>
+                                                                        <td>senhaRichmondDiana</td>
+                                                                        <td>DNV5240</td>
+                                                                        <td>evolucionalPass4</td>
+                                                                        <td>senhaEvo#4</td>
+                                                                        <td>diana.oliveira@example.com</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button id="closeModal" type="button" class="btn btn-secondary" data-mdb-ripple-init data-mdb-dismiss="modal">Fechar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Fim do Modal -->
+
                                     </div>
-
-
-
                                 </div>
                                 <div class="col-lg-6 d-flex align-items-center rounded-5" id="logo-container">
                                     <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                         <img src="/img/logo_vila.png" style="width: 320px;" alt="logo">
-                                        <p class="pt-4">Ferramenta para consulta de logins de nossas plataformas digitais.<br> <b> Equipe de TI & TE Colegio vila.</b></p>
+                                        <p class="pt-4">Ferramenta para consulta de logins de nossas plataformas digitais.<br> <b>Equipe de TI & TE Colegio vila.</b></p>
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +167,51 @@
                 </div>
             </div>
         </section>
+        
+            <script>
 
+document.addEventListener('DOMContentLoaded', function() {
+    var myModalEl = document.getElementById('myModal');
+    var myModal = new bootstrap.Modal(myModalEl);
+
+    // Abrir o modal
+    document.getElementById('openModal').addEventListener('click', function() {
+        myModal.show();
+    });
+
+    // Fechar o modal via script
+    document.getElementById('closeModal').addEventListener('click', function() {
+        myModal.hide();
+    });
+});
+
+
+
+                 var modal = document.getElementById("myModal");
+
+// Obter o botão que abre o modal
+var btn = document.getElementById("modal");
+
+// Obter o elemento <span> que fecha o modal
+var span = document.getElementsByClassName("close-btn")[0];
+
+// Quando o usuário clicar no botão, abra o modal
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+
+// Quando o usuário clicar em <span> (x), feche o modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// Quando o usuário clicar fora do modal, feche-o
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+            </script>
        
     </main>
 </body>
