@@ -8,6 +8,19 @@ const { Pool } = require('pg');
 const multer = require('multer');
 const xlsx = require('xlsx');
 
+const mongoose = require('mongoose')
+
+
+
+
+const MONGO_USER = process.env.MONGO_USER
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD
+
+
+mongoose.connect('mongodb+srv://andersonsous744:anderson1709@cluster0.tcneq.mongodb.net/').then(()=>{
+  app.listen(3000)
+  console.log('Conexão de usuarios MongoDB autorizada !')
+}).catch((err) => console.log(err))
 
 
 
