@@ -7,8 +7,9 @@ const { Pool } = require('pg');
 
 const multer = require('multer');
 const xlsx = require('xlsx');
-
+app.use(express.json())
 const mongoose = require('mongoose')
+const User = require('./model/user')
 
 
 
@@ -316,17 +317,15 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 // Rota de criação de usuarios
 
-app.post("/register", async (req,res) =>{
-  const newUser =  await new User({
-    email: req.body.email,
-    password: CryptoJs.AES.encrypt(req.body.password, process.env.PASS_SEC).toString(),
-});
+app.post('/login' , async (req,res) => { 
+  const  {
+    email,
+    password,   
+  } = req.body
 
-try{
-const savedUser = await newUser.save();
-res.status(201).json(savedUser);
-}
-catch  (err) {
-res.status(500).json(err);    
-}                                                                                                                                         
-});
+  if(!email | password){
+    return res.status(422).json({msg :
+      "Insira um nome e senha validos"
+    })
+  }
+})
