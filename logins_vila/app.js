@@ -7,10 +7,25 @@ const { Pool } = require('pg');
 
 const multer = require('multer');
 const xlsx = require('xlsx');
-
+app.use(express.json())
 const mongoose = require('mongoose')
+const User = require('./model/user')
+const flash = require('connect-flash')
+const session = require('express-session');
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
+app.use(express.urlencoded({ extended: true }));
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 
+
+app.use(flash());
+app.use(session({
+  secret: '123456',
+  resave: false,
+  saveUninitialized: true
+}));
 
 
 const MONGO_USER = process.env.MONGO_USER
@@ -78,19 +93,46 @@ app.listen(process.env.APP_PORT, () => {
 
 // ROTAS 
 
-app.get("/", async (req, res) => {
-  res.render('Home');
+
+
+
+
+app.get("/Home", authenticateToken, async (req, res) => {
+  const mensagemT = req.flash('mensagemTrue');
+  const mensagemF = req.flash('mensagemFalse');
+  const mensagemN = req.flash('mensagemNotif');
+  res.render('Home', {
+        mensagemT: mensagemT.length > 0 ? mensagemT[0] : null,
+        mensagemF: mensagemF.length > 0 ? mensagemF[0] : null,
+        mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
+
+  } );
 });
 
 
 app.get("/login", async (req, res) => {
-  res.render('login');
+  const mensagemT = req.flash('mensagemTrue');
+  const mensagemF = req.flash('mensagemFalse');
+  const mensagemN = req.flash('mensagemNotif');
+  res.render('login', {
+      mensagemT: mensagemT.length > 0 ? mensagemT[0] : null,
+      mensagemF: mensagemF.length > 0 ? mensagemF[0] : null,
+      mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
+   });
 });
 
 
 app.get("/dashboards", async (req, res) => {
   res.render('dashboards');
 });
+
+
+app.get("/adminlte", async (req, res) => {
+  res.render('adminlte');
+});
+
+
+
 
 
 app.get("/resultados", async (req, res) => {
@@ -188,6 +230,11 @@ app.get("/alunos", async (req, res) => {
 
 
 app.get("/aluno", async (req, res) => {
+
+  const mensagemT = req.flash('mensagemTrue');
+  const mensagemF = req.flash('mensagemFalse');
+  const mensagemN = req.flash('mensagemNotif');
+
   try {
     const searchType = req.query.searchType;
     const param = req.query.param;
@@ -207,13 +254,21 @@ app.get("/aluno", async (req, res) => {
 
     const result = await pool.query(query, values);
 
-    if (result.rows.length === 0) {
-      return res.status(404).render('error');
-    }
 
+
+    if (result.rows.length === 0) {
+      req.flash('mensagemFalse', "Erro durante a cópia de registros:")
+      return res.redirect('back');
+
+
+
+
+    }
     if (searchType === 'matricula') {
       const aluno = result.rows[0];
       res.render('aluno', { aluno });
+
+
     } else {
       const alunos = result.rows;
       res.render('resultados', { alunos });
@@ -300,7 +355,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     res.status(200).send('Planilha importada com sucesso!');
   } catch (error) {
     console.error('Erro ao importar planilha:', error);
-    res.status(500).send(`Erro ao importar planilha: ${error.message}`);
+    res.status(500).redirect('back');
   } finally {
     // Remover o arquivo temporário após processamento
     if (fs.existsSync(req.file.path)) {
@@ -309,6 +364,119 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
+
+
+
+
+// Rota de criação de usuarios
+
+app.post('/register' , async (req,res) => { 
+  const  {
+    email,
+    password,   
+  } = req.body
+
+  if(!email){
+    return res.status(422).json({msg :"Insira um nome e senha validos"})
+  }
+
+  const Userexists = await User.findOne({email:email})
+
+
+  if(Userexists) { 
+    return res.status(422).json({msg :"USUARIO JA CADASTRADO "})
+  }
+
+
+  const salt = await bcrypt.genSalt(12)
+  const passwordHash = await bcrypt.hash(password, salt)
+  const user = new User({
+    email,
+    password : passwordHash,
+  })
+
+  try{
+    await user.save()
+    res.status(201).json({msg : 'usuario criado com sucesso'})
+  }
+  catch{
+    res.status(500).json({msg: 'erro ao criar o usuario '})
+
+  }
+})
+
+
+
+
+
+
+
+// funcao de autenticacao
+
+
+
+
+function authenticateToken(req, res, next) {
+  const token = req.cookies.token || req.header('Authorization') && req.header('Authorization').replace('Bearer ', '');
+
+  
+  if (!token) {
+      req.flash('mensagemFalse', 'Acesso negado! Por favor, faça login.');
+      return res.status(401).redirect('/login');
+  }
+
+  
+  try {
+      const secret = process.env.SECRET_KEY;
+      const decoded = jwt.verify(token, secret);
+      req.user = decoded; // Adiciona as informações do usuário no req
+      next(); // Permite que a requisição prossiga
+  } catch (err) {
+      req.flash('mensagemFalse', 'Token inválido! Por favor, faça login novamente.');
+      return res.status(401).redirect('/login');
+  }
+}
+
+
+// rota de autenticacao 
+
+
+app.post('/login' , async (req,res) => {
+    
+    const {email,password} = req.body
+
+    const user = await User.findOne({email:email})
+
+
+  if(!user) { 
+    req.flash('mensagemFalse', "Usuário não encontrado!")
+    return res.status(404).redirect('back')
+  }
+  const checkPassword = await bcrypt.compare(password, user.password)
+
+  if (!checkPassword){
+    req.flash('mensagemFalse', "Senha incorreta!")
+    return res.status(422).redirect('back')
+  }
+
+  try {
+    const secret = process.env.SECRET_KEY;
+   
+    const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1m' }); // Token expira no tempo passado como parametro
+res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 1 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
+
+
+    res.status(200).redirect('/Home');
+    req.flash('mensagemTrue', 'Usuário conectado !');
+    console.log("Usuário logado:", req.body.email);
+} catch (err) {
+    console.log(err);
+    req.flash('mensagemFalse', 'Erro ao fazer login!');
+    res.status(500).redirect('/login');
+}
+    
+
+})
 
 
 

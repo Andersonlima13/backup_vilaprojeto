@@ -15,14 +15,15 @@
 </head>
 
 <body>
-
+    
+    <%- include('./partials/notificacao.ejs') %>
     <i class="bi bi-list menu-mobile"></i>
 
     <aside id='header'>
         <nav id='navbar' class="nav-menu">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="/Home"><i class="bi bi-search" aria-hidden="true"></i> Buscar Aluno</a>
+                    <a class="nav-link" aria-current="page" href="/"><i class="bi bi-search" aria-hidden="true"></i> Buscar Aluno</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/dashboards"><i class="bi bi-bar-chart" aria-hidden="true"></i> Dashboards</a>
@@ -55,23 +56,26 @@
                             <div class="row g-0">
                                 <div class="col-lg-6 rounded-5" id="input-container">
                                     <div class="card-body p-md-5 mx-md-4">
-                                        <h1>Importar Planilha de Alunos</h1>
-                                        <form action="/upload" method="POST" enctype="multipart/form-data">
-                                            <label for="file">Escolha a planilha:</label>
-                                            <input class="" type="file" id="file" name="file" accept=".xlsx, .xls" required>
-                                            <br>
-                                            <button id="modal" class="bg-primary rounded-1 border-0" type="submit" data-toggle="modal" data-target="#myModal">Importar</button>
+                                        <h4 class="mt-1 mb-5 pb-1 fw-bold">Buscar Acesso De Aluno</h4>
+                                        <form action="/aluno" method="GET" onsubmit="return validar()">
+                                            <div data-mdb-input-init class="form-outline mb-4 border-2">
+                                                <select class="border-2 border-primary rounded-1 fw-bold" name="searchType" id="input-select" required style="width: 90px; height: 32px;">
+                                                    <option value="matricula">Matrícula</option>
+                                                    <option value="nome">Nome</option>
+                                                </select>
+                                                <input class="rounded-1 border-2 border-primary fw-bold" type="text" name="param" id="param" placeholder="Buscar ..." required>
+                                                <div id="error-message" class="text-dark bg-danger" style="font-weight:bold;"></div>
+                                            </div>
+                                            <div class="text-center pt-1 mb-5 pb-1">
+                                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg" type="submit" id="buscar-aluno" style="width: 80%; height: 40px;">Buscar</button>
+                                            </div>
                                         </form>
-
-                                        <!-- Modal -->
-                                        
-
                                     </div>
                                 </div>
                                 <div class="col-lg-6 d-flex align-items-center rounded-5" id="logo-container">
                                     <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                         <img src="/img/logo_vila.png" style="width: 320px;" alt="logo">
-                                        <p class="pt-4">Ferramenta para consulta de logins de nossas plataformas digitais.<br> <b>Equipe de TI & TE Colegio vila.</b></p>
+                                        <p class="pt-4">Ferramenta para consulta de logins de nossas plataformas digitais.<br> <b> Equipe de TI & TE Colegio vila.</b></p>
                                     </div>
                                 </div>
                             </div>
@@ -80,52 +84,25 @@
                 </div>
             </div>
         </section>
-        
-            <script>
 
-document.addEventListener('DOMContentLoaded', function() {
-    var myModalEl = document.getElementById('myModal');
-    var myModal = new bootstrap.Modal(myModalEl);
+        <script>
+            function validar() {
+                var searchType = document.getElementById('input-select').value;
+                var param = document.getElementById('param').value;
+                var errorMessage = document.getElementById('error-message');
 
-    // Abrir o modal
-    document.getElementById('openModal').addEventListener('click', function() {
-        myModal.show();
-    });
-
-    // Fechar o modal via script
-    document.getElementById('closeModal').addEventListener('click', function() {
-        myModal.hide();
-    });
-});
-
-
-
-                 var modal = document.getElementById("myModal");
-
-// Obter o botão que abre o modal
-var btn = document.getElementById("modal");
-
-// Obter o elemento <span> que fecha o modal
-var span = document.getElementsByClassName("close-btn")[0];
-
-// Quando o usuário clicar no botão, abra o modal
-btn.onclick = function() {
-    modal.style.display = "block";
-}
-
-// Quando o usuário clicar em <span> (x), feche o modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-// Quando o usuário clicar fora do modal, feche-o
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-            </script>
-       
+                if (searchType === 'matricula') {
+                    var isNumeric = /^\d+$/.test(param);
+                    if (!isNumeric) {
+                        errorMessage.textContent = "Ops! você selecionou o campo 'MATRICULA' ao buscar um nome, Selecione o campo 'NOME' se deseja buscar um aluno por nome";
+                        errorMessage.style.display = 'block';
+                        return false;
+                    }
+                }
+                errorMessage.style.display = 'none';
+                return true;
+            }
+        </script>
     </main>
 </body>
 </html>
