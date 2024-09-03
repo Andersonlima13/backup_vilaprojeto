@@ -97,7 +97,7 @@ app.listen(process.env.APP_PORT, () => {
 
 
 
-app.get("/", authenticateToken, async (req, res) => {
+app.get("/Home", authenticateToken, async (req, res) => {
   const mensagemT = req.flash('mensagemTrue');
   const mensagemF = req.flash('mensagemFalse');
   const mensagemN = req.flash('mensagemNotif');
@@ -110,7 +110,7 @@ app.get("/", authenticateToken, async (req, res) => {
 });
 
 
-app.get("/login", async (req, res) => {
+app.get("/", async (req, res) => {
   const mensagemT = req.flash('mensagemTrue');
   const mensagemF = req.flash('mensagemFalse');
   const mensagemN = req.flash('mensagemNotif');
@@ -414,7 +414,7 @@ function authenticateToken(req, res, next) {
 
   if (!token) {
       req.flash('mensagemFalse', 'Acesso negado! Por favor, faça login.');
-      return res.status(401).redirect('/login');
+      return res.status(401).redirect('/');
   }
 
   
@@ -425,7 +425,7 @@ function authenticateToken(req, res, next) {
       next(); // Permite que a requisição prossiga
   } catch (err) {
       req.flash('mensagemFalse', 'Token inválido! Por favor, faça login novamente.');
-      return res.status(401).redirect('/login');
+      return res.status(401).redirect('/');
   }
 }
 
@@ -458,12 +458,12 @@ app.post('/login' , async (req,res) => {
     // Envia o token como um cookie
     res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 }); // `httpOnly` impede o acesso via JavaScript
 
-    res.status(200).redirect('/');
+    res.status(200).redirect('/Home');
     console.log("Usuário logado:", req.body.email);
 } catch (err) {
     console.log(err);
     req.flash('mensagemFalse', 'Erro ao fazer login!');
-    res.status(500).redirect('/login');
+    res.status(500).redirect('/');
 }
     
 
