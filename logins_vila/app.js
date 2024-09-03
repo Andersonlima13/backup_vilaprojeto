@@ -17,6 +17,7 @@ const jwt = require('jsonwebtoken');
 app.use(express.urlencoded({ extended: true }));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+require('dotenv').config();
 
 
 
@@ -28,14 +29,19 @@ app.use(session({
 }));
 
 
+
 const MONGO_USER = process.env.MONGO_USER
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD
 
 
-mongoose.connect('mongodb+srv://andersonsous744:anderson1709@cluster0.tcneq.mongodb.net/').then(()=>{
-  app.listen(3000)
-  console.log('Conexão de usuarios MongoDB autorizada !')
-}).catch((err) => console.log(err))
+
+
+
+
+mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster0.tcneq.mongodb.net/`).then(() => {
+  app.listen(3000);
+  console.log('Conexão de usuários MongoDB autorizada!');
+}).catch((err) => console.log('Erro ao conectar ao MongoDB:', err));
 
 
 
@@ -61,7 +67,7 @@ const upload = multer({ storage: storage });
 
 
 
-require('dotenv').config();
+
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname));
@@ -74,6 +80,8 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
 });
+
+
 
 // Conexão com o banco de dados
 pool.connect((err, client, release) => {
@@ -93,7 +101,9 @@ app.listen(process.env.APP_PORT, () => {
 
 // ROTAS 
 
-
+app.get("/usuario", async (req,res) => {
+  if (res.status)res.render("usuario")
+})
 
 
 
@@ -120,6 +130,13 @@ app.get("/login", async (req, res) => {
       mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
    });
 });
+
+
+
+app.get("/", async (req, res) => {
+  res.redirect('/dashboards');
+});
+
 
 
 app.get("/dashboards", async (req, res) => {
@@ -462,8 +479,8 @@ app.post('/login' , async (req,res) => {
   try {
     const secret = process.env.SECRET_KEY;
    
-    const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1m' }); // Token expira no tempo passado como parametro
-res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 1 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
+    const token = jwt.sign({ id: user._id }, secret, { expiresIn: '5m' }); // Token expira no tempo passado como parametro
+res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 5 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
 
 
     res.status(200).redirect('/Home');
