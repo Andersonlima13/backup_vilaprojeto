@@ -9,6 +9,7 @@ const multer = require('multer');
 const xlsx = require('xlsx');
 app.use(express.json())
 const mongoose = require('mongoose')
+
 const User = require('./model/user')
 const flash = require('connect-flash')
 const session = require('express-session');
@@ -18,7 +19,15 @@ app.use(express.urlencoded({ extended: true }));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 require('dotenv').config();
-routes = require('./routes/login');
+
+
+// IMPORTAÇÃO DE ROTAS // QUE VEM DO ARQUIVO ROUTES , CADA ARQUIVO , CADA ROTA
+testederota = require('./routes/testederota');
+
+
+// APP.USE ( AQUI COLOCAMOS TODAS AS ROTAS ULTILIZADAS)
+app.use(testederota);
+
 
 
 
@@ -496,7 +505,7 @@ app.post('/login' , async (req,res) => {
     const secret = process.env.SECRET_KEY;
    
     const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1m' }); // Token expira no tempo passado como parametro
-res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 1 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
+    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 1 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
 
 
     res.status(200).redirect('/Home');
