@@ -97,7 +97,7 @@ app.listen(process.env.APP_PORT, () => {
 
 
 
-app.get("/Home", authenticateToken, async (req, res) => {
+app.get("/Home", async (req, res) => {
   const mensagemT = req.flash('mensagemTrue');
   const mensagemF = req.flash('mensagemFalse');
   const mensagemN = req.flash('mensagemNotif');
@@ -110,7 +110,7 @@ app.get("/Home", authenticateToken, async (req, res) => {
 });
 
 
-app.get("/", async (req, res) => {
+app.get("/login", async (req, res) => {
   const mensagemT = req.flash('mensagemTrue');
   const mensagemF = req.flash('mensagemFalse');
   const mensagemN = req.flash('mensagemNotif');
@@ -125,6 +125,19 @@ app.get("/", async (req, res) => {
 app.get("/dashboards", async (req, res) => {
   res.render('dashboards');
 });
+
+
+app.get("/", async (req, res) => {
+  res.render('dashboards');
+});
+
+
+app.get("/adminlte", async (req, res) => {
+  res.render('adminlte');
+});
+
+
+
 
 
 app.get("/resultados", async (req, res) => {
@@ -144,6 +157,9 @@ app.get('/usuarios', (req, res) => {
 });
 
 
+app.get('/register',  (req, res) => {
+  res.render('register');
+});
 
 
 
@@ -361,12 +377,57 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 
 
+
+
+
+function verifyTI(req, res, next) {
+  const token = req.cookies.token;
+
+  if (!token) {
+    req.flash('mensagemFalse', 'Acesso negado. Faça login primeiro!');
+    
+    return res.status(403).redirect('/login');
+
+  }
+
+  try {
+    const secret = process.env.SECRET_KEY;
+    const decoded = jwt.verify(token, secret);
+
+    req.userId = decoded.id;
+
+    // Buscar o usuário pelo ID e verificar o perfil
+    User.findById(req.userId).then(user => {
+      if (!user) {
+        return res.status(404).json({ msg: 'Usuário não encontrado' });
+      }
+
+      if (user.perfil !== 'TI') {
+        req.flash('mensagemFalse', 'Voce nao tem permissao para acessar');
+        return res.status(403).redirect('back');
+      }
+
+      next();  // Usuário autenticado e com perfil TI, pode continuar
+    }).catch(err => {
+      console.log(err);
+      return res.status(500).json({ msg: 'Erro ao buscar usuário' });
+    });
+
+  } catch (err) {
+    return res.status(403).json({ msg: 'Token inválido!' });
+  }
+}
+
+
+
+
 // Rota de criação de usuarios
 
-app.post('/register' , async (req,res) => { 
+app.post('/register' , verifyTI, async (req,res) => { 
   const  {
     email,
     password,   
+    perfil
   } = req.body
 
   if(!email){
@@ -386,14 +447,15 @@ app.post('/register' , async (req,res) => {
   const user = new User({
     email,
     password : passwordHash,
+    perfil,
   })
 
   try{
     await user.save()
     res.status(201).json({msg : 'usuario criado com sucesso'})
   }
-  catch{
-    res.status(500).json({msg: 'erro ao criar o usuario '})
+  catch (err) {
+    console.log(err)
 
   }
 })
@@ -412,9 +474,10 @@ app.post('/register' , async (req,res) => {
 function authenticateToken(req, res, next) {
   const token = req.cookies.token || req.header('Authorization') && req.header('Authorization').replace('Bearer ', '');
 
+  
   if (!token) {
       req.flash('mensagemFalse', 'Acesso negado! Por favor, faça login.');
-      return res.status(401).redirect('/');
+      return res.status(401).redirect('/login');
   }
 
   
@@ -425,7 +488,7 @@ function authenticateToken(req, res, next) {
       next(); // Permite que a requisição prossiga
   } catch (err) {
       req.flash('mensagemFalse', 'Token inválido! Por favor, faça login novamente.');
-      return res.status(401).redirect('/');
+      return res.status(401).redirect('/login');
   }
 }
 
@@ -442,28 +505,29 @@ app.post('/login' , async (req,res) => {
 
   if(!user) { 
     req.flash('mensagemFalse', "Usuário não encontrado!")
-    return res.status(404).redirect('back')
+    return res.status(404).redirect('/login')
   }
   const checkPassword = await bcrypt.compare(password, user.password)
 
   if (!checkPassword){
     req.flash('mensagemFalse', "Senha incorreta!")
-    return res.status(422).redirect('back')
+    
+    return res.status(422).redirect('/login')
   }
 
   try {
     const secret = process.env.SECRET_KEY;
-    const token = jwt.sign({ id: user._id }, secret);
+   
+    const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1m' }); // Token expira no tempo passado como parametro
+    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 1 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
 
-    // Envia o token como um cookie
-    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 }); // `httpOnly` impede o acesso via JavaScript
 
     res.status(200).redirect('/Home');
     console.log("Usuário logado:", req.body.email);
 } catch (err) {
-    console.log(err);
     req.flash('mensagemFalse', 'Erro ao fazer login!');
-    res.status(500).redirect('/');
+    
+    return res.status(500).redirect('/login');
 }
     
 
@@ -472,3 +536,4 @@ app.post('/login' , async (req,res) => {
 
 
 
+  
