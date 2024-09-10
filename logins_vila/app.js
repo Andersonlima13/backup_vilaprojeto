@@ -110,9 +110,16 @@ app.listen(process.env.APP_PORT, () => {
 
 
 // ROTAS 
+app.get("/rotaadm", async (req, res) => {
+  
+  res.render('rotaadm');
+});
 
 
-
+app.get("/register",verifyTI, async (req, res) => {
+  
+  res.render('register');
+});
 
 
 
