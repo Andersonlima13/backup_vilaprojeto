@@ -108,6 +108,14 @@ app.listen(process.env.APP_PORT, () => {
 });
 
 
+app.get("/sidebar", async (req, res) => {
+  
+  res.render('template');
+});
+
+
+
+
 
 // ROTAS 
 app.get("/rotaadm", async (req, res) => {
