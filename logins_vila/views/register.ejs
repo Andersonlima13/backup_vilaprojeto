@@ -1,60 +1,57 @@
 <div class="card card-primary">
-    <div class="card-header">
-      <h3 class="card-title">Criar Usuário</h3>
-    </div>
-    <form id="registerForm">
-      <div class="card-body">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" class="form-control" id="email" placeholder="Enter email" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Senha</label>
-          <input type="password" class="form-control" id="password" placeholder="Password" required>
-        </div>
-        <div class="form-group">
-          <label for="perfil">Perfil de usuário</label>
-          <select class="form-control" id="perfil" required>
-            <option value="Direcao">Direção</option>
-            <option value="TI">TI</option>
-            <option value="Coordenacao">Coordenação</option>
-          </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Criar Usuário</button>
-      </div>
-    </form>
+  <div class="card-header">
+    <h3 class="card-title">Criar Usuário</h3>
   </div>
-  
-  <script>
-    document.getElementById('registerForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const perfil = document.getElementById('perfil').value;
+  <form id="registerForm">
+    <div class="card-body">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input type="password" class="form-control" id="password" placeholder="Password" required>
+      </div>
+      <div class="form-group">
+        <label for="perfil">Perfil de usuário</label>
+        <select class="form-control" id="perfil" required>
+          <option value="Direção">Direção</option>
+          <option value="TI">TI</option>
+          <option value="Coordenação">Coordenação</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button type="submit" class="btn btn-primary">Registrar</button>
+    </div>
+  </form>
+</div>
 
-  
-      try {
-        const response = await fetch('/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password, perfil})
-        });
-  
-        const data = await response.json();
-  
-        if (response.ok) {
-          alert('Usuário registrado com sucesso!');
-          // Redirecionar ou limpar formulário
-        } else {
-          alert(data.msg || 'Erro ao registrar usuário');
-        }
-      } catch (error) {
-        console.error('Erro:', error);
-        alert(`${error} Erro ao conectar ao servidor`);
-      }
+<script>
+document.getElementById('registerForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const perfil = document.getElementById('perfil').value;
+
+  try {
+    const response = await fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, perfil })
     });
-  </script> 
-      <!-- /.card-body -->
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert(data.msg);
+    } else {
+      alert(data.msg || 'Erro ao registrar');
+    }
+  } catch (error) {
+    console.error('Erro:', error);
+    alert('Erro ao conectar ao servidor.');
+  }
+});
+</script>

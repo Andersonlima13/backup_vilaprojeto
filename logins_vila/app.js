@@ -9,6 +9,7 @@ const multer = require('multer');
 const xlsx = require('xlsx');
 app.use(express.json())
 const mongoose = require('mongoose')
+
 const User = require('./model/user')
 const flash = require('connect-flash')
 const session = require('express-session');
@@ -17,25 +18,41 @@ const jwt = require('jsonwebtoken');
 app.use(express.urlencoded({ extended: true }));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+require('dotenv').config();
+const configureFlash = require('./flashconfig')  // Importa a configuração
+
+
+// IMPORTAÇÃO DE ROTAS // QUE VEM DO ARQUIVO ROUTES , CADA ARQUIVO , CADA ROTA
+testederota = require('./routes/testederota');
+//dashboardRoute = require('./routes/dashboards');
+loginRoute = require('./routes/login');
+//registerRoute = require('./routes/register');
+//homeRoute = require('./routes/home');
 
 
 
-app.use(flash());
-app.use(session({
-  secret: '123456',
-  resave: false,
-  saveUninitialized: true
-}));
+
+// APP.USE ( AQUI COLOCAMOS TODAS AS ROTAS ULTILIZADAS)
+app.use(testederota,loginRoute);
+
+configureFlash(app);
+
+
+
 
 
 const MONGO_USER = process.env.MONGO_USER
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD
 
 
-mongoose.connect('mongodb+srv://andersonsous744:anderson1709@cluster0.tcneq.mongodb.net/').then(()=>{
-  app.listen(3000)
-  console.log('Conexão de usuarios MongoDB autorizada !')
-}).catch((err) => console.log(err))
+
+
+
+
+mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster0.tcneq.mongodb.net/`).then(() => {
+  app.listen(3000);
+  console.log('Conexão de usuários MongoDB autorizada!');
+}).catch((err) => console.log('Erro ao conectar ao MongoDB:', err));
 
 
 
@@ -61,7 +78,7 @@ const upload = multer({ storage: storage });
 
 
 
-require('dotenv').config();
+
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname));
@@ -74,6 +91,8 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
 });
+
+
 
 // Conexão com o banco de dados
 pool.connect((err, client, release) => {
@@ -97,37 +116,38 @@ app.listen(process.env.APP_PORT, () => {
 
 
 
-app.get("/Home", async (req, res) => {
+
+app.get('/Home', authenticateToken, async (req, res) => {
   const mensagemT = req.flash('mensagemTrue');
   const mensagemF = req.flash('mensagemFalse');
   const mensagemN = req.flash('mensagemNotif');
   res.render('Home', {
-        mensagemT: mensagemT.length > 0 ? mensagemT[0] : null,
-        mensagemF: mensagemF.length > 0 ? mensagemF[0] : null,
-        mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
-
-  } );
+    mensagemT: mensagemT.length > 0 ? mensagemT[0] : null,
+    mensagemF: mensagemF.length > 0 ? mensagemF[0] : null,
+    mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
+  });
 });
 
 
-app.get("/login", async (req, res) => {
-  const mensagemT = req.flash('mensagemTrue');
-  const mensagemF = req.flash('mensagemFalse');
-  const mensagemN = req.flash('mensagemNotif');
-  res.render('login', {
-      mensagemT: mensagemT.length > 0 ? mensagemT[0] : null,
-      mensagemF: mensagemF.length > 0 ? mensagemF[0] : null,
-      mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
-   });
-});
 
 
-app.get("/dashboards", async (req, res) => {
-  res.render('dashboards');
+
+
+
+app.get("/register",async (req, res) => {
+  
+  res.render('register');
 });
+
 
 
 app.get("/", async (req, res) => {
+  res.redirect('/dashboards');
+});
+
+
+
+app.get("/dashboards", async (req, res) => {
   res.render('dashboards');
 });
 
@@ -157,9 +177,6 @@ app.get('/usuarios', (req, res) => {
 });
 
 
-app.get('/register',  (req, res) => {
-  res.render('register');
-});
 
 
 
@@ -238,11 +255,7 @@ app.get("/alunos", async (req, res) => {
 
 
 app.get("/aluno", async (req, res) => {
-
-  const mensagemT = req.flash('mensagemTrue');
-  const mensagemF = req.flash('mensagemFalse');
-  const mensagemN = req.flash('mensagemNotif');
-
+  
   try {
     const searchType = req.query.searchType;
     const param = req.query.param;
@@ -265,7 +278,8 @@ app.get("/aluno", async (req, res) => {
 
 
     if (result.rows.length === 0) {
-      req.flash('mensagemFalse', "Erro durante a cópia de registros:")
+    
+      req.flash('mensagemFalse', "Aluno não encontrado")
       return res.redirect('back');
 
 
@@ -376,58 +390,13 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 
 
-
-
-
-
-function verifyTI(req, res, next) {
-  const token = req.cookies.token;
-
-  if (!token) {
-    req.flash('mensagemFalse', 'Acesso negado. Faça login primeiro!');
-    
-    return res.status(403).redirect('/login');
-
-  }
-
-  try {
-    const secret = process.env.SECRET_KEY;
-    const decoded = jwt.verify(token, secret);
-
-    req.userId = decoded.id;
-
-    // Buscar o usuário pelo ID e verificar o perfil
-    User.findById(req.userId).then(user => {
-      if (!user) {
-        return res.status(404).json({ msg: 'Usuário não encontrado' });
-      }
-
-      if (user.perfil !== 'TI') {
-        req.flash('mensagemFalse', 'Voce nao tem permissao para acessar');
-        return res.status(403).redirect('back');
-      }
-
-      next();  // Usuário autenticado e com perfil TI, pode continuar
-    }).catch(err => {
-      console.log(err);
-      return res.status(500).json({ msg: 'Erro ao buscar usuário' });
-    });
-
-  } catch (err) {
-    return res.status(403).json({ msg: 'Token inválido!' });
-  }
-}
-
-
-
-
 // Rota de criação de usuarios
 
-app.post('/register' , verifyTI, async (req,res) => { 
+app.post('/register',  async (req,res) => { 
   const  {
     email,
-    password,   
-    perfil
+    password,
+    perfil 
   } = req.body
 
   if(!email){
@@ -454,8 +423,8 @@ app.post('/register' , verifyTI, async (req,res) => {
     await user.save()
     res.status(201).json({msg : 'usuario criado com sucesso'})
   }
-  catch (err) {
-    console.log(err)
+  catch{
+    res.status(500).json({msg: 'erro ao criar o usuario '})
 
   }
 })
@@ -466,7 +435,11 @@ app.post('/register' , verifyTI, async (req,res) => {
 
 
 
+
+
 // funcao de autenticacao
+
+
 
 
 
@@ -493,47 +466,56 @@ function authenticateToken(req, res, next) {
 }
 
 
+
+
+
+
+
 // rota de autenticacao 
 
 
-app.post('/login' , async (req,res) => {
+
+
+
+
+
+// FUNCAO QUE VERIFICA O  TIPO DE USUARIO QUE ACESSA A ROTA
+
+
+function verifyTI(req, res, next) {
+  const token = req.cookies.token;
+
+  if (!token) {
+    req.flash('mensagemFalse', "Acesso negado. Faça login primeiro!")
+    return res.status(403).redirect('/login')
     
-    const {email,password} = req.body
-
-    const user = await User.findOne({email:email})
-
-
-  if(!user) { 
-    req.flash('mensagemFalse', "Usuário não encontrado!")
-    return res.status(404).redirect('/login')
-  }
-  const checkPassword = await bcrypt.compare(password, user.password)
-
-  if (!checkPassword){
-    req.flash('mensagemFalse', "Senha incorreta!")
-    
-    return res.status(422).redirect('/login')
   }
 
   try {
     const secret = process.env.SECRET_KEY;
-   
-    const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1m' }); // Token expira no tempo passado como parametro
-    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 1 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
+    const decoded = jwt.verify(token, secret);
 
+    req.userId = decoded.id;
 
-    res.status(200).redirect('/Home');
-    console.log("Usuário logado:", req.body.email);
-} catch (err) {
-    req.flash('mensagemFalse', 'Erro ao fazer login!');
-    
-    return res.status(500).redirect('/login');
+    // Buscar o usuário pelo ID e verificar o perfil
+    User.findById(req.userId).then(user => {
+      if (!user) {
+        return res.status(404).json({ msg: 'Usuário não encontrado' });
+      }
+
+      if (user.perfil !== 'TI') {
+        
+        req.flash('mensagemFalse', "Você não tem permissao de acesso")
+        return res.status(404).json({ msg: 'Você não tem permissao de acesso' });
+      }
+
+      next();  // Usuário autenticado e com perfil TI, pode continuar
+    }).catch(err => {
+      console.log(err);
+      return res.status(500).json({ msg: 'Erro ao buscar usuário' });
+    });
+
+  } catch (err) {
+    return res.status(403).json({ msg: 'Token inválido!' });
+  }
 }
-    
-
-})
-
-
-
-
-  

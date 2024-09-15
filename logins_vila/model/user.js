@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const User = mongoose.model('User' , {
     email : String,
     password : String,
-    perfil: { type: String, required: true },
+    perfil: { type: String, required: true }
 })
 
 
