@@ -141,7 +141,7 @@ app.get("/rotaadm", async (req, res) => {
 });
 
 
-app.get("/register",verifyTI, async (req, res) => {
+app.get("/register", async (req, res) => {
   
   res.render('register');
 });
