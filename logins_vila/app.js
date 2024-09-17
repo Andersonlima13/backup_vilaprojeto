@@ -5,13 +5,17 @@ const path = require('path');
 const fs = require('fs');
 const { Pool } = require('pg');
 
+
+const flash = require('connect-flash')
+
+
+
 const multer = require('multer');
 const xlsx = require('xlsx');
 app.use(express.json())
 const mongoose = require('mongoose')
 
 const User = require('./model/user')
-const flash = require('connect-flash')
 const session = require('express-session');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
@@ -19,7 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 require('dotenv').config();
-const configureFlash = require('./flashconfig')  // Importa a configuração
 
 
 // IMPORTAÇÃO DE ROTAS // QUE VEM DO ARQUIVO ROUTES , CADA ARQUIVO , CADA ROTA
@@ -30,12 +33,25 @@ loginRoute = require('./routes/login');
 //homeRoute = require('./routes/home');
 
 
+app.use(session({
+  secret: '123456',
+  resave: false,
+  saveUninitialized: true,
+}));
+
+// Configuração do flash
+app.use(flash());
+
+
+
+
+
 
 
 // APP.USE ( AQUI COLOCAMOS TODAS AS ROTAS ULTILIZADAS)
 app.use(testederota,loginRoute);
 
-configureFlash(app);
+
 
 
 
