@@ -475,7 +475,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 // Rota de criação de usuarios
 
-app.post('/register',  async (req,res) => { 
+app.post('/register',  verifyTI, async (req,res) => { 
   const  {
     email,
     password,
