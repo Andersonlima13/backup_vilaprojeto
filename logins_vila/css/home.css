@@ -7,8 +7,7 @@ h1 {
 .icon-row {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
-    padding: 20px;
+ 
 }
 
 .icon {

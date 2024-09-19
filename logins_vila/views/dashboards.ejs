@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -33,21 +33,21 @@
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgb(18, 57, 120)">
             <!-- Brand Logo -->
-            <a href="../public/adminlte/index3.html" class="brand-link">
-                <img src="../img/vila_logotipo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Colegio Vila</span>
+            <a  class="brand-link">
+                <img src="../img/fav_colegiovila.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light p-2">Colegio Vila</span>
             </a>
             <!-- Sidebar -->
             <div class="sidebar">
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="../public/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                        <img src="" class="img-circle elevation-2" alt="Imagem de usuario">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Usuario TI</a>
+                        <a href="#" class="d-block"></a>
                     </div>
                 </div>
 
@@ -64,24 +64,30 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+
                                 <li class="nav-item">
                                     <a href="/" class="nav-link">
                                         <i class="nav-icon fas fa-wreath"></i>
                                         <p>Plataformas</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+
+                                  <li class="nav-item">
                                     <a href="/" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
+                                        <i class="nav-icon fas fa-wreath"></i>
                                         <p>Administrativo</p>
                                     </a>
                                 </li>
+
+
                                 <li class="nav-item">
-                                    <a href="../../index3.html" class="nav-link">
-                                        <i class="nav-icon fas fa-shopping-cart"></i>
+                                    <a href="/" class="nav-link">
+                                        <i class="nav-icon fas fa-wreath"></i>
                                         <p>Financeiro</p>
                                     </a>
                                 </li>
+
+
                             </ul>
                         </li>
                         <!-- Buscador De Logins -->
@@ -93,19 +99,24 @@
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
+
                             <ul class="nav nav-treeview">
+
                                 <li class="nav-item">
                                     <a href="/Home" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
+                                        <i class="nav-icon fas fa-wreath"></i>
                                         <p>Buscar aluno</p>
                                     </a>
                                 </li>
+
+
                                 <li class="nav-item">
-                                    <a href="/upload" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
+                                    <a href="/" class="nav-link">
+                                        <i class="nav-icon fas fa-wreath"></i>
                                         <p>Adcionar Aluno</p>
                                     </a>
                                 </li>
+
                             </ul>
                         </li>
                         <!-- Usuários -->
@@ -148,138 +159,79 @@
             <!-- /.sidebar -->
         </aside>
 
+
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper p-4">
+            <%- include('./partials/notificacao.ejs') %>
           
             <!-- Content Header (Page header) -->
-        </head>
-                <main id="main">
-                
-                    <div>
-                        Dashboards ,<b> Analise De Dados</b>
+            <div class="icon-row ">
+                <a href="https://lookerstudio.google.com/u/0/reporting/ffc58189-78c2-48b3-b0fd-a81fdc7418c3/page/gCp2D" target="_blank">
+                    <div class="icon">
+                        <img src="/img/medalhei_logo.jpg" alt="Ícone 1">
+                        <p class="text-dark">Dashboard Medalhei</p>
                     </div>
+                </a>
 
 
-
-                <body>
-                    <div class="container">
-            
-                        <div class="icon-row ">
-                            <a href="https://lookerstudio.google.com/u/0/reporting/ffc58189-78c2-48b3-b0fd-a81fdc7418c3/page/gCp2D" target="_blank">
-                                <div class="icon">
-                                    <img src="/img/medalhei_logo.jpg" alt="Ícone 1">
-                                    <p class="text-dark">Dashboard Medalhei</p>
-                                </div>
-                            </a>
-            
-            
-                            <a class="arvore" href="https://lookerstudio.google.com/reporting/427a4ca9-14fc-44b7-83d8-4bf687127cf9" target="_blank">
-                                <div class="icon">
-                                    <img src="/img/arvore_icon.png" alt="Arvore de livros">
-                                    <p class="text-dark">Dashboard Arvore de livros</p>
-                                </div>
-                            </a>
-            
-                            <a href="https://lookerstudio.google.com/u/0/reporting/e466feee-4a1d-478b-ac01-d8857d28e4a7/page/sJvaD" target="_blank">
-                                <div class="icon">
-                                    <img src="/img/vila_logotipo.png" alt="Ícone 1">
-                                    <p class="text-dark">Matriculas 2025</p>
-                                </div>
-                            </a>
-
-
-
-                                
-
-
-
-            
-                            <a href="https://lookerstudio.google.com/reporting/5be79cf2-c86c-4c91-a023-fee1e02049b3" target="_blank">
-                                <div class="icon">
-                                    <img src="/img/google_logo.jpg" alt="Google dash">
-                                    <p class="text-dark">Acesso ao google</p>
-                                </div>
-                            
-                                <a href="https://lookerstudio.google.com/reporting/5ee7b46d-6fcc-4c1c-bc17-f2217b7d5f2a" target="_blank">
-                                    <div class="icon">
-                                        <img src="/img/classapp.png" alt="ClassApp">
-                                        <p class="text-dark">Dashboard ClassApp</p>
-            
-                                
-            
-            
-            
-                                    </div>
-                                    
-            
-                                    
-                                        
-                                    </div>
-            
-            
-                            </a>
-            
-                        </div>
+                <a class="arvore" href="https://lookerstudio.google.com/reporting/427a4ca9-14fc-44b7-83d8-4bf687127cf9" target="_blank">
+                    <div class="icon">
+                        <img src="/img/arvore_icon.png" alt="Arvore de livros">
+                        <p class="text-dark">Dashboard Arvore de livros</p>
                     </div>
-                </body>
-                
+                </a>
+
+                <a href="https://lookerstudio.google.com/u/0/reporting/e466feee-4a1d-478b-ac01-d8857d28e4a7/page/sJvaD" target="_blank">
+                    <div class="icon">
+                        <img src="/img/vila_logotipo.png" alt="Ícone 1">
+                        <p class="text-dark">Matriculas 2025</p>
+                    </div>
+                </a>
+
+
+
                     
+
+
+
+
+                <a href="https://lookerstudio.google.com/reporting/5be79cf2-c86c-4c91-a023-fee1e02049b3" target="_blank">
+                    <div class="icon">
+                        <img src="/img/google_logo.jpg" alt="Google dash">
+                        <p class="text-dark">Acesso ao google</p>
+                    </div>
                 
-                
-                
-                
-                    <script>
-               
-                
-                      document.addEventListener('DOMContentLoaded', function() {
-                       document.getElementById('buscar-aluno').addEventListener('click', function() {
-                           const matricula = document.getElementById('matricula').value;
-               
-                           if (!matricula.trim()) {
-                               window.alert("Insira um número de matrícula ou nome");
-                               return; 
-                           }
-                           
-                           window.location.href = `/aluno/${matricula}`;
-                       });
-               
-                       function downloadPdf(matricula) {
-                           window.location.href = '/aluno/' + matricula + '/pdf';
-                       }
-                   });
-               
-               
-               
-                   
-                       
-               
-                   
-               /*
-                     function gerarpdf(){
-                       var doc = new jsPDF()
-                       doc.fromHTML(`<h1> HTML DE TESTE </h1>`)
-                       doc.save(`pdf`)
-               
-                     }
-               
-                 */
-               
+                    <a href="https://lookerstudio.google.com/reporting/5ee7b46d-6fcc-4c1c-bc17-f2217b7d5f2a" target="_blank">
+                        <div class="icon">
+                            <img src="/img/classapp.png" alt="ClassApp">
+                            <p class="text-dark">Dashboard ClassApp</p>
+
+                    
+
+
+
+                        </div>
                         
-                    </script>
-                
-                
-                </body>
-            
-                </main>
-            
+
+                        
+                            
+                        </div>
+
+
+                </a>
+
+            </div>
+
             <!-- Main content -->
-          
+            
             <!-- /.content -->
         </div>
+        
         <!-- /.content-wrapper -->
 
         <!-- Main Footer -->
         <footer class="main-footer">
+            
             <div class="float-right d-none d-sm-block">
                 <b>Version</b> 3.2.0
             </div>
@@ -304,4 +256,3 @@
 </body>
 
 </html>
-  

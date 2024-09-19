@@ -151,14 +151,14 @@ app.get("/rotaadm", async (req, res) => {
 });
 
 
-app.get("/register", async (req, res) => {
+app.get("/register", verifyTI, async (req, res) => {
   
   res.render('register');
 });
 
 
 
-app.get('/Home', authenticateToken, async (req, res) => {
+app.get('/Home', verifyAdm, async (req, res) => {
   const mensagemT = req.flash('mensagemTrue');
   const mensagemF = req.flash('mensagemFalse');
   const mensagemN = req.flash('mensagemNotif');
@@ -175,21 +175,25 @@ app.get('/Home', authenticateToken, async (req, res) => {
 
 
 
-app.get("/register",async (req, res) => {
-  
-  res.render('register');
-});
 
 
 
 app.get("/", async (req, res) => {
-  res.redirect('/dashboards');
+  res.redirect('/dashboards', );
 });
 
 
 
 app.get("/dashboards", async (req, res) => {
-  res.render('dashboards');
+  const mensagemT = req.flash('mensagemTrue');
+  const mensagemF = req.flash('mensagemFalse');
+  const mensagemN = req.flash('mensagemNotif');
+  res.render('dashboards', {
+    mensagemT: mensagemT.length > 0 ? mensagemT[0] : null,
+    mensagemF: mensagemF.length > 0 ? mensagemF[0] : null,
+    mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
+ });
+  
 });
 
 
@@ -225,7 +229,7 @@ app.get('/usuarios', (req, res) => {
 // ao buscar por nome o usuario é redirecionado para a view rotateste , contendo o nome dos usuarios encontrados pela busca
 
 
-app.get("/aluno/:param", async (req, res) => {
+app.get("/aluno/:param", authenticateToken, async (req, res) => {
   try {
       const param = req.params.param;
       let query, values;
@@ -267,7 +271,7 @@ app.get("/aluno/:param", async (req, res) => {
 
 
 
-app.get("/alunos", async (req, res) => {
+app.get("/alunos",authenticateToken, async (req, res) => {
   try {
     const query = 'SELECT * FROM ALUNO';
     const result = await pool.query(query);
@@ -399,11 +403,11 @@ if (!checkPassword){
 try {
   const secret = process.env.SECRET_KEY;
  
-  const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1m' }); // Token expira no tempo passado como parametro
-  res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 1 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
+  const token = jwt.sign({ id: user._id }, secret, { expiresIn: '5m' }); // Token expira no tempo passado como parametro
+  res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 5 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
 
 
-  res.status(200).redirect('/Home');
+  res.status(200).redirect('/dashboards');
   req.flash('mensagemTrue', 'Usuário conectado !');
   console.log("Usuário logado:", req.body.email);
 } catch (err) {
@@ -475,7 +479,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 // Rota de criação de usuarios
 
-app.post('/register',  verifyTI, async (req,res) => { 
+app.post('/register', verifyTI,  async (req,res) => { 
   const  {
     email,
     password,
@@ -533,7 +537,7 @@ function authenticateToken(req, res, next) {
   
   if (!token) {
       req.flash('mensagemFalse', 'Acesso negado! Por favor, faça login.');
-      return res.status(401).redirect('/login');
+      return res.redirect('/login');
   }
 
   
@@ -565,40 +569,90 @@ function authenticateToken(req, res, next) {
 // FUNCAO QUE VERIFICA O  TIPO DE USUARIO QUE ACESSA A ROTA
 
 
-function verifyTI(req, res, next) {
+
+
+
+
+
+
+
+async function verifyAdm(req, res, next) {
   const token = req.cookies.token;
 
   if (!token) {
-    req.flash('mensagemFalse', "Acesso negado. Faça login primeiro!")
-    return res.status(403).redirect('/login')
-    
+    req.flash('mensagemFalse', 'Acesso Negado , Faça login primeiro');
+    return res.status(403).redirect('/login');
   }
 
   try {
     const secret = process.env.SECRET_KEY;
     const decoded = jwt.verify(token, secret);
-
     req.userId = decoded.id;
 
-    // Buscar o usuário pelo ID e verificar o perfil
-    User.findById(req.userId).then(user => {
-      if (!user) {
-        return res.status(404).json({ msg: 'Usuário não encontrado' });
-      }
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      req.flash('mensagemFalse', 'Usuário não encontrado');
+      return res.status(404).redirect('back');
+    }
 
-      if (user.perfil !== 'TI') {
-        
-        req.flash('mensagemFalse', "Você não tem permissao de acesso")
-        return res.status(404).json({ msg: 'Você não tem permissao de acesso' });
-      }
+    if (user.perfil !== 'TI') {  
+      req.flash('mensagemFalse', 'Acesso Negado');
+      return res.status(401).redirect('back');
+    }
 
-      next();  // Usuário autenticado e com perfil TI, pode continuar
-    }).catch(err => {
-      console.log(err);
-      return res.status(500).json({ msg: 'Erro ao buscar usuário' });
-    });
+    if (user.perfil !== 'Direção') {  
+      req.flash('mensagemFalse', 'Acesso Negado');
+      return res.status(401).redirect('back');
+    }
 
+    next();
   } catch (err) {
-    return res.status(403).json({ msg: 'Token inválido!' });
+    
+    req.flash('mensagemFalse', 'Token inválido');
+      return res.status(403).redirect('back');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+async function verifyTI(req, res, next) {
+  const token = req.cookies.token;
+
+  if (!token) {
+    req.flash('mensagemFalse', 'Acesso Negado , Faça login primeiro');
+    return res.status(403).redirect('/login');
+  }
+
+  try {
+    const secret = process.env.SECRET_KEY;
+    const decoded = jwt.verify(token, secret);
+    req.userId = decoded.id;
+
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      req.flash('mensagemFalse', 'Usuário não encontrado');
+      return res.status(404).redirect('back');
+    }
+
+    if (user.perfil !== 'TI') {  
+      req.flash('mensagemFalse', 'Acesso Negado');
+      return res.status(401).redirect('back');
+    }
+
+
+    next();
+  } catch (err) {
+    
+    req.flash('mensagemFalse', 'Token inválido');
+      return res.status(403).redirect('back');
   }
 }

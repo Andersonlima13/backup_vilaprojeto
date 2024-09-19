@@ -1,3 +1,8 @@
+
+#buscar-aluno{
+  background: linear-gradient(90deg, rgb(42, 83, 145) 1%, rgb(24, 84, 168) 100%); /* Light gray background */
+}
+
 .lista-nomes {
     list-style: none; /* Remove bullet points */
     padding: 0; /* Remove default padding */
@@ -5,10 +10,10 @@
   }
   
 .nome {
-    background: linear-gradient(90deg, rgb(14, 34, 63) 1%, rgb(13, 34,64) 100%); /* Light gray background */
+    background: linear-gradient(90deg, rgb(42, 83, 145) 1%, rgb(24, 84, 168) 100%); /* Light gray background */
     margin: 3px 0; /* Space between list items, reduced */
     padding: 5px; /* Space inside each list item, reduced */
-    border-radius: 4px; /* Slightly rounded corners */
+    border-radius: 4px; /* Slightly rourgb(55, 102, 173)
     font-size: 14px; /* Smaller font size */
   }
   

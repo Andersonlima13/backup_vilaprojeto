@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../public/adminlte/dist/css/adminlte.min.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 </head> 
 
 <body class="hold-transition sidebar-mini">
@@ -35,21 +36,21 @@
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgb(18, 57, 120)">
             <!-- Brand Logo -->
             <a href="../public/adminlte/index3.html" class="brand-link">
-                <img src="../public/adminlte/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Colegio Vila</span>
+                <img src="../img/fav_colegiovila.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light p-2">Colegio Vila</span>
             </a>
             <!-- Sidebar -->
             <div class="sidebar">
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="../public/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                        <img src=".." class="img-circle elevation-2" alt="imagem-usuario">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Usuario TI</a>
+                        <a href="#" class="d-block"></a>
                     </div>
                 </div>
 
@@ -97,13 +98,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../../index.html" class="nav-link">
+                                    <a href="/home" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Buscar aluno</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../../index2.html" class="nav-link">
+                                    <a href="/home" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Adicionar Aluno</p>
                                     </a>
@@ -127,7 +128,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../../index2.html" class="nav-link">
+                                    <a href="/register" class="nav-link">
                                         <i class="nav-icon fas fa-list"></i>
                                         <p>Lista de usuários</p>
                                     </a>
@@ -137,7 +138,7 @@
                         <!-- Sair -->
                         <li class="nav-item">
                             <a href="../public/calendar.html" class="nav-link">
-                                <i class="nav-icon far fa-calendar-alt"></i>
+                                <i class="nav-icon fa fa-arrow-left"></i>
                                 <p>
                                     Sair
                                 </p>
@@ -210,7 +211,7 @@
                 }
               } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao conectar ao servidor.');
+                alert(console.log(error));
               }
             });
             
