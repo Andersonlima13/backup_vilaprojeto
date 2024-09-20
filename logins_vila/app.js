@@ -158,7 +158,7 @@ app.get("/register", verifyTI, async (req, res) => {
 
 
 
-app.get('/Home', verifyAdm, async (req, res) => {
+app.get('/Home', verifyAdm,async (req, res) => {
   const mensagemT = req.flash('mensagemTrue');
   const mensagemF = req.flash('mensagemFalse');
   const mensagemN = req.flash('mensagemNotif');
@@ -299,7 +299,7 @@ app.get("/alunos",authenticateToken, async (req, res) => {
 
 
 
-app.get("/aluno", async (req, res) => {
+app.get("/aluno", authenticateToken, async (req, res) => {
   
   try {
     const searchType = req.query.searchType;
@@ -596,15 +596,11 @@ async function verifyAdm(req, res, next) {
       return res.status(404).redirect('back');
     }
 
-    if (user.perfil !== 'TI') {  
+    if (user.perfil !== 'TI'  && user.perfil !== 'Direção') {  
       req.flash('mensagemFalse', 'Acesso Negado');
       return res.status(401).redirect('back');
     }
 
-    if (user.perfil !== 'Direção') {  
-      req.flash('mensagemFalse', 'Acesso Negado');
-      return res.status(401).redirect('back');
-    }
 
     next();
   } catch (err) {
