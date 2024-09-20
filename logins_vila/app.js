@@ -135,30 +135,29 @@ app.listen(process.env.APP_PORT, () => {
 });
 
 
-app.get("/sidebar", async (req, res) => {
-  
-  res.render('template');
-});
 
 
 
 
 
 // ROTAS 
-app.get("/rotaadm", async (req, res) => {
-  
-  res.render('rotaadm');
-});
 
 
 app.get("/register", verifyTI, async (req, res) => {
+  const mensagemT = req.flash('mensagemTrue');
+  const mensagemF = req.flash('mensagemFalse');
+  const mensagemN = req.flash('mensagemNotif');
   
-  res.render('register');
+  res.render('register' , {
+    mensagemT: mensagemT.length > 0 ? mensagemT[0] : null,
+    mensagemF: mensagemF.length > 0 ? mensagemF[0] : null,
+    mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
+  });
 });
 
 
 
-app.get('/Home', verifyAdm,async (req, res) => {
+app.get('/Home', verifyAdm, async (req, res) => {
   const mensagemT = req.flash('mensagemTrue');
   const mensagemF = req.flash('mensagemFalse');
   const mensagemN = req.flash('mensagemNotif');
@@ -197,15 +196,12 @@ app.get("/dashboards", async (req, res) => {
 });
 
 
-app.get("/adminlte", async (req, res) => {
-  res.render('adminlte');
-});
 
 
 
 
 
-app.get("/resultados", async (req, res) => {
+app.get("/resultados", verifyAdm, async (req, res) => {
   res.render('resultados');
 });
 
@@ -217,9 +213,6 @@ app.get('/upload', authenticateToken, (req, res) => {
 });
 
 
-app.get('/usuarios', (req, res) => {
-  res.render('usuarios');
-});
 
 
 
@@ -229,7 +222,7 @@ app.get('/usuarios', (req, res) => {
 // ao buscar por nome o usuario é redirecionado para a view rotateste , contendo o nome dos usuarios encontrados pela busca
 
 
-app.get("/aluno/:param", authenticateToken, async (req, res) => {
+app.get("/aluno/:param", verifyAdm, async (req, res) => {
   try {
       const param = req.params.param;
       let query, values;
@@ -271,7 +264,7 @@ app.get("/aluno/:param", authenticateToken, async (req, res) => {
 
 
 
-app.get("/alunos",authenticateToken, async (req, res) => {
+app.get("/alunos",verifyAdm,  async (req, res) => {
   try {
     const query = 'SELECT * FROM ALUNO';
     const result = await pool.query(query);
@@ -299,7 +292,7 @@ app.get("/alunos",authenticateToken, async (req, res) => {
 
 
 
-app.get("/aluno", authenticateToken, async (req, res) => {
+app.get("/aluno",verifyAdm, async (req, res) => {
   
   try {
     const searchType = req.query.searchType;
@@ -596,11 +589,12 @@ async function verifyAdm(req, res, next) {
       return res.status(404).redirect('back');
     }
 
-    if (user.perfil !== 'TI'  && user.perfil !== 'Direção') {  
+    if (user.perfil !== 'TI' && user.perfil !== 'Direção') {  
       req.flash('mensagemFalse', 'Acesso Negado');
       return res.status(401).redirect('back');
     }
 
+   
 
     next();
   } catch (err) {
