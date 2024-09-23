@@ -19,6 +19,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+
 </head> 
 
 <body class="hold-transition sidebar-mini">
@@ -38,7 +41,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgb(18, 57, 120)">
             <!-- Brand Logo -->
-            <a href="../public/adminlte/index3.html" class="brand-link">
+            <a href="" class="brand-link">
                 <img src="../img/fav_colegiovila.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light p-2">Colegio Vila</span>
             </a>
@@ -156,25 +159,25 @@
           
             <!-- Content Header (Page header) -->
           
-            <%- include('./partials/notificacao.ejs') %>
+            
             <!-- Main content -->
-            <div class="card card-primary">
+            <div class="card card-primary" >
               <div class="card-header">
                 <h3 class="card-title">Criar Usuário</h3>
               </div>
-              <form id="registerForm">
+              <form id="registerForm" method="post">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" required name="email">
                   </div>
                   <div class="form-group">
                     <label for="password">Senha</label>
-                    <input type="password" class="form-control" id="password" placeholder="Password" required>
+                    <input type="password" class="form-control" id="password" placeholder="Password" required name="password">
                   </div>
                   <div class="form-group">
                     <label for="perfil">Perfil de usuário</label>
-                    <select class="form-control" id="perfil" required>
+                    <select class="form-control" id="perfil" required name="perfil">
                       <option value="Direção">Direção</option>
                       <option value="TI">TI</option>
                       <option value="Coordenação">Coordenação</option>
@@ -188,37 +191,13 @@
             </div>
             
             <script>
-            document.getElementById('registerForm').addEventListener('submit', async function (e) {
-              e.preventDefault();
             
-              const email = document.getElementById('email').value;
-              const password = document.getElementById('password').value;
-              const perfil = document.getElementById('perfil').value;
-            
-              try {
-                const response = await fetch('/register', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email, password, perfil })
-                });
-            
-                const data = await response.json();
-            
-                if (response.ok) {
-                  alert(data.msg);
-                } else {
-                  alert(data.msg || 'Erro ao registrar');
-                }
-              } catch (error) {
-                console.error('Erro:', error);
-                alert(console.log(error));
-              }
-            });
             
             </script>
             
             <!-- /.content -->
         </div>
+        <%- include('./partials/notificacao.ejs') %>
         <!-- /.content-wrapper -->
 
         <!-- Main Footer -->

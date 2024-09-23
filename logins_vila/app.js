@@ -202,7 +202,14 @@ app.get("/dashboards", async (req, res) => {
 
 
 app.get("/resultados", verifyAdm, async (req, res) => {
-  res.render('resultados');
+  const mensagemT = req.flash('mensagemTrue');
+  const mensagemF = req.flash('mensagemFalse');
+  const mensagemN = req.flash('mensagemNotif');
+  res.render('resultados',{
+    mensagemT: mensagemT.length > 0 ? mensagemT[0] : null,
+    mensagemF: mensagemF.length > 0 ? mensagemF[0] : null,
+    mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
+ });
 });
 
 
@@ -396,8 +403,8 @@ if (!checkPassword){
 try {
   const secret = process.env.SECRET_KEY;
  
-  const token = jwt.sign({ id: user._id }, secret, { expiresIn: '5m' }); // Token expira no tempo passado como parametro
-  res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 5 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
+  const token = jwt.sign({ id: user._id }, secret, { expiresIn: '10m' }); // Token expira no tempo passado como parametro
+  res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 10 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
 
 
   res.status(200).redirect('/dashboards');
@@ -480,14 +487,16 @@ app.post('/register', verifyTI,  async (req,res) => {
   } = req.body
 
   if(!email){
-    return res.status(422).json({msg :"Insira um nome e senha validos"})
+    req.flash('mensagemFalse', 'Insira um nome e senha validos');
+    return res.status(422).redirect('back');
   }
 
   const Userexists = await User.findOne({email:email})
 
 
   if(Userexists) { 
-    return res.status(422).json({msg :"USUARIO JA CADASTRADO "})
+    req.flash('mensagemFalse', 'O usuário já existe! tente fazer login');
+      return res.status(422).redirect('back');
   }
 
 
@@ -501,10 +510,12 @@ app.post('/register', verifyTI,  async (req,res) => {
 
   try{
     await user.save()
-    res.status(201).json({msg : 'usuario criado com sucesso'})
+    req.flash('mensagemTrue', 'Usuário criado com sucesso!');
+    return res.status(201).redirect('back');
   }
   catch{
-    res.status(500).json({msg: 'erro ao criar o usuario '})
+    req.flash('mensagemFalse', 'Erro ao criar usuário! Atualize a pagina e tente novamente');
+    return res.status(500).redirect('back');
 
   }
 })
