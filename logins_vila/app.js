@@ -480,7 +480,13 @@ app.post('/upload', upload.single('file'), async (req, res) => {
       }
     }
 
-    res.status(200).send('Planilha importada com sucesso!');
+    res.status(200).redirect('back');
+   req.flash('mensagemTrue', 'Alunos adcionados com sucesso!');
+
+
+
+
+    
   } catch (error) {
     console.error('Erro ao importar planilha:', error);
     res.status(500).redirect('back');
