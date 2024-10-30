@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const { Pool } = require('pg');
+const ExcelJS = require('exceljs');
+
 
 
 const flash = require('connect-flash')
@@ -53,6 +55,23 @@ app.get("/login", async (req, res) => {
       mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
    });
 });
+
+
+
+
+
+app.get("/template", async (req, res) => {
+  const mensagemT = req.flash('mensagemTrue');
+  const mensagemF = req.flash('mensagemFalse');
+  const mensagemN = req.flash('mensagemNotif');
+  res.render('template', {
+      mensagemT: mensagemT.length > 0 ? mensagemT[0] : null,
+      mensagemF: mensagemF.length > 0 ? mensagemF[0] : null,
+      mensagemN: mensagemN.length > 0 ? mensagemN[0] : null,
+   });
+});
+
+
 
 
 
@@ -157,7 +176,7 @@ app.get("/register", verifyTI, async (req, res) => {
 
 
 
-app.get('/Home', verifyAdm, async (req, res) => {
+app.get('/Home', authenticateToken, async (req, res) => {
   const mensagemT = req.flash('mensagemTrue');
   const mensagemF = req.flash('mensagemFalse');
   const mensagemN = req.flash('mensagemNotif');
@@ -178,7 +197,7 @@ app.get('/Home', verifyAdm, async (req, res) => {
 
 
 app.get("/", async (req, res) => {
-  res.redirect('/dashboards', );
+  res.redirect('/login');
 });
 
 
@@ -404,7 +423,7 @@ try {
   const secret = process.env.SECRET_KEY;
  
   const token = jwt.sign({ id: user._id }, secret, { expiresIn: '10m' }); // Token expira no tempo passado como parametro
-  res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 10 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
+  res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 10 * 60 * 1000 }); // Cookie expira no tempo passado como parametro
 
 
   res.status(200).redirect('/dashboards');
@@ -657,3 +676,54 @@ async function verifyTI(req, res, next) {
       return res.status(403).redirect('back');
   }
 }
+
+
+
+
+
+// download da planilha de modelo 
+
+
+app.get('/download-modelo', async (req, res) => {
+  // Criar uma nova instância do workbook e worksheet
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Modelo');
+
+  // Definir os cabeçalhos e uma linha de exemplo
+  const headers = ['NOME', 'SERIE', 'UNIDADE', 'EMAIL', 'SENHA_EMAIL', 'MATRICULA', 'SENHA_APP', 'SFB', 'SENHA_SFB', 'RICHMOND', 'SENHA_R', 'ARVORE_SENHA', 'EVOLUCIONAL', 'SENHA_EVO', 'MEDALHEI'];
+  const exampleData = ['Aluno', '1ª Série A', 'VILA BESSA', 'aluno@sou.vilacolegio.com.br', 'senha12345', '0000', '010118', 'aluno.sfb.1', '010118', 'rsbr.aluno.richmond.5', '123456', 'ABC0000', '1234567', 'vila12345', 'aluno@sou.vilacolegio.com.br'];
+
+  // Adicionar os cabeçalhos com estilo
+  worksheet.addRow(headers);
+  headers.forEach((header, index) => {
+    const cell = worksheet.getRow(1).getCell(index + 1);
+    cell.font = { bold: true }; // Negrito
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF0070C0' }, // Azul (ARGB hexadecimal)
+    };
+    cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Alinhamento centralizado
+  });
+
+  // Adicionar a linha de exemplo
+  worksheet.addRow(exampleData);
+
+  // Ajustar a largura das colunas para melhor visualização
+  worksheet.columns.forEach((column) => {
+    column.width = 20;
+  });
+
+  // Salvar a planilha temporariamente para envio
+  const filePath = path.join(__dirname, 'planilha_modelo_exemplo.xlsx');
+  await workbook.xlsx.writeFile(filePath);
+
+  // Enviar o arquivo para o usuário e removê-lo após o download
+  res.download(filePath, 'planilha_modelo_exemplo.xlsx', (err) => {
+    if (err) {
+      console.error('Erro ao enviar planilha:', err);
+    }
+    // Remover o arquivo temporário após o envio
+    fs.unlinkSync(filePath);
+  });
+});
